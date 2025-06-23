@@ -4,11 +4,17 @@ K     F1-Score   Precision  Recall
 3     0.5688     0.5579     0.6249     
 5     0.5674     0.5523     0.6244    
 
-Resumo Estatístico - XGBoost
+Resumo Estatístico - GBoost
 K     F1-Score   Precision  Recall    
 ----------------------------------------
 3     0.5667     0.5917     0.6186     
 5     0.5687     0.6046     0.6184   
+
+Resumo Estatístico - SVM
+K     F1-Score   Precision  Recall    
+----------------------------------------
+3     0.5695     0.5567     0.6262     
+5     0.5682     0.5525     0.6251  
 
 ==================== AVALIANDO: Random Forest ====================
 
