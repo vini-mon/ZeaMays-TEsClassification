@@ -1,0 +1,17 @@
+- Mapping não parece útil, ele só substitui o ATCG por outra representação (binária, int, eiip).
+
+- Chaos Game é uma representação da sequencia em forma de um fractal.
+
+- Fourier, qual foi usada?
+* Numerical Mapping and Fourier Transform - DNA/RNA ou;
+* Accumulated Nucleotide Frequency with Fourier
+
+- Entropia por Shannon e Tsallis parece muito bom, porém com representação numérica estranha. Agrupar por range seria a solução?
+* Classificação por aprendizado de máquina
+Shannon: Usada como feature
+Tsallis: Usada como feature com ajuste de *q*
+
+- Anf: capturar informações posicionais e distribucionais das bases nucleotídicas ao longo da sequência.
+contagem acumulada meio contrária a subsequências (k-mers).
+
+

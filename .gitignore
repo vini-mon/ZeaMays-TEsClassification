@@ -1,0 +1,8 @@
+df_metricas_seq.csv
+models/kfold_models/modelo_gbt_kfold.joblib
+models/modelo_rf.joblib
+models/modelo_rf_op.zip
+models/modelo_rf_op.joblib
+ZMays/Agrup/k-mer/k-mer_agrupado.csv
+ZMays/Agrup/k-mer/parte1.csv
+ZMays/Agrup/k-mer/parte2.csv
