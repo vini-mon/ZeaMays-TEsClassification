@@ -1,0 +1,2 @@
+nameseq,maximum_ORF_length,minimum_ORF_length,std_ORF_length,average_ORF_length,cv_ORF_length,maximum_GC_content_ORF,minimum_GC_content_ORF,std_GC_content_ORF,average_GC_content_ORF,cv_GC_content_ORF,label
+2_12723784_12724267,258,15,94.30634920300966,99.75,0.9454270596792949,50.617283950617285,35.55555555555556,5.477889459336073,42.20212460522538,0.12980127210604492,orf
