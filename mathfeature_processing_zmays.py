@@ -1,19 +1,20 @@
 import os
 import subprocess
 import logging
+import pandas as pd
 from multiprocessing import Pool, cpu_count
 import gc
 from datetime import datetime
 
 # Configurações
-DATA_DIR = "data"
-MATHFEATURE_PATH = "MathFeature"
+DATA_DIR = "."
+MATHFEATURE_PATH = "../TEsHierarquicalClassification/MathFeature"
 PREPROCESSING_SCRIPT = f"{MATHFEATURE_PATH}/preprocessing/preprocessing.py"
 OPERATIONS_DIR = "methods"
 SCRIPTS = {
-	"mapping": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/MappingClass.py",
+	#"mapping": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/MappingClass.py",
 	"fourier": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/FourierClass.py",
-	"chaos": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/ChaosGameTheory.py",
+	#"chaos": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/ChaosGameTheory.py",
 	"entropy": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/EntropyClass.py",
 	"tsallis": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/TsallisEntropy.py",
 	"complex_networks": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/ComplexNetworksClass-v2.py",
@@ -21,8 +22,8 @@ SCRIPTS = {
 	"anf": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/AccumulatedNucleotideFrequency.py",
 	"orf": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/CodingClass.py",
 	"fickett_score": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/FickettScore.py",
-	"pse-knc": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/PseKNC.py", # Não implementado
-	"kgap": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/Kgap.py", # Não implementado
+	#"pse-knc": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/PseKNC.py", # Não implementado
+	#"kgap": f"{MATHFEATURE_PATH}/{OPERATIONS_DIR}/Kgap.py", # Não implementado
 
 }
 
@@ -621,10 +622,10 @@ def process_sequence(seq_name, plant, sequences_dir, stats):
 	required_operations = [
 		(None, None),  # Pré-processamento
 	] + [
-		("mapping", num) for num in NUMERICAL_REPRESENTATIONS
-	] + [
-		("chaos", num) for num in CHAOS_APPROACHES
-	] + [
+	#	("mapping", num) for num in NUMERICAL_REPRESENTATIONS
+	#] + [
+	#	("chaos", num) for num in CHAOS_APPROACHES
+	#] + [
 		("fourier", num) for num in NUMERICAL_REPRESENTATIONS
 	] + [
 		("entropy", num) for num in ENTROPY_TYPES
@@ -656,16 +657,16 @@ def process_sequence(seq_name, plant, sequences_dir, stats):
 		stats['failed'] += 1
 	else:
 		# Processa Mapeamentos Numéricos
-		for num in NUMERICAL_REPRESENTATIONS:
-			if not run_numerical_mapping(plant, seq_name, num):
-				seq_success = False
-				stats['failed'] += 1
+		#for num in NUMERICAL_REPRESENTATIONS:
+		#	if not run_numerical_mapping(plant, seq_name, num):
+		#		seq_success = False
+		#		stats['failed'] += 1
 
 		# Processa Chaos Game
-		for approach_num in CHAOS_APPROACHES:
-			if not run_chaos_mapping(plant, seq_name, approach_num):
-				seq_success = False
-				stats['failed'] += 1
+		#for approach_num in CHAOS_APPROACHES:
+		#	if not run_chaos_mapping(plant, seq_name, approach_num):
+		#		seq_success = False
+		#		stats['failed'] += 1
 
 		# Processa Fourier
 		for num in NUMERICAL_REPRESENTATIONS:
@@ -721,10 +722,32 @@ if __name__ == "__main__":
 		'already_processed': 0
 	}
 
-	for plant in sorted(os.listdir(DATA_DIR)):
+	for plant in ["ZMays"]:
 		plant_dir = os.path.join(DATA_DIR, plant)
 		sequences_dir = os.path.join(plant_dir, "seq")
+
+		gff3_file = os.path.join(plant_dir, "ZMays_TER_merged.csv")
+		gff3_df = pd.read_csv(gff3_file)
 		
+		qtd_classes = {
+			'LTR': 38484,
+			'TIR': 17000,
+			'Helitron': 0,
+			'MITE': 0,
+			'LINE': 0,
+			'SINE': 0
+		}
+
+		seqs = []
+		for index, seq in gff3_df.iterrows():
+			if seq['COS'].split('/')[1] not in ['LTR', 'TIR'] and qtd_classes[seq['COS'].split('/')[1]] < qtd_classes['TIR']:
+				seq_name = f"{seq['Chr']}_{seq['Start']}_{seq['End']}.fasta"
+
+				if not os.path.exists(os.path.join(plant_dir, "preprocessing", seq_name)):
+					seqs.append(f"{seq['Chr']}_{seq['Start']}_{seq['End']}.fasta")
+
+				qtd_classes[seq['COS'].split('/')[1]] += 1
+
 		num_processes = max(1, cpu_count() // 2)  # Usar metade dos núcleos da CPU
 
 		# Lista para armazenar sequências que precisam ser processadas
@@ -734,7 +757,7 @@ if __name__ == "__main__":
 		with Pool(num_processes) as pool:
 			results = pool.starmap(process_sequence, [
 				(sequence_file, plant, sequences_dir, stats)
-				for sequence_file in sorted(os.listdir(sequences_dir))
+				for sequence_file in seqs
 			])
 			
 	# Relatório final
